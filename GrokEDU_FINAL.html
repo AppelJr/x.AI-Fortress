@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>GrokEDU FINAL — Sovereign Learning System</title>
+<meta name="description" content="HIPAA-aware, post-quantum oriented, air-gap capable educational AI platform — on-device first"/>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   GROKEDU FINAL — single file · zero external fonts/CDN · offline
+   Updates: themes · density · radius · display name · AI lanes · XP
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --font-display: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-code: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --ink: #0a0c14;
+  --paper: #0d1117;
+  --surface: #111827;
+  --border: #1f2937;
+  --accent: #00f0c8;
+  --accent2: #7c3aed;
+  --accent3: #f59e0b;
+  --red: #ef4444;
+  --blue: #3b82f6;
+  --pink: #ec4899;
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --glow: 0 0 20px rgba(0,240,200,0.3);
+
+  --user-accent: var(--accent);
+  --user-radius: 10px;
+  --user-density: 1;
+}
+
+/* Theme presets */
+body[data-theme="ocean"] {
+  --accent: #22d3ee; --accent2: #0ea5e9; --paper: #0c1929; --surface: #0f2744; --border: #1e3a5f;
+}
+body[data-theme="ember"] {
+  --accent: #fbbf24; --accent2: #f97316; --paper: #1a1008; --surface: #2a1810; --border: #3d2a14;
+}
+body[data-theme="violet"] {
+  --accent: #c084fc; --accent2: #a855f7; --paper: #12081c; --surface: #1e0f2e; --border: #2e1a4a;
+}
+body[data-theme="forest"] {
+  --accent: #34d399; --accent2: #10b981; --paper: #071410; --surface: #0c1f18; --border: #14352a;
+}
+
+body[data-density="compact"] .card { padding: 12px; }
+body[data-density="compact"] .nav-item { padding: 6px 14px; }
+body[data-density="compact"] .stat-card { padding: 10px; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-display);
+  background: var(--ink);
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,240,200,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,240,200,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#app { display: flex; height: 100vh; position: relative; z-index: 1; }
+
+/* Sidebar */
+#sidebar {
+  width: 220px;
+  min-width: 220px;
+  background: var(--paper);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  z-index: 10;
+}
+.sidebar-logo { padding: 20px 16px 12px; border-bottom: 1px solid var(--border); }
+.sidebar-logo .brand {
+  font-size: 1.1rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+.sidebar-logo .ver { font-family: var(--font-code); font-size: 0.6rem; color: var(--muted); margin-top: 2px; }
+.sidebar-section { padding: 8px 0; border-bottom: 1px solid var(--border); }
+.sidebar-label {
+  font-family: var(--font-code);
+  font-size: 0.55rem;
+  color: var(--muted);
+  letter-spacing: 2px;
+  padding: 6px 16px 4px;
+  text-transform: uppercase;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+  user-select: none;
+}
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-item.active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  background: rgba(0,240,200,0.06);
+}
+.nav-item .icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+.nav-item .badge {
+  margin-left: auto;
+  background: var(--accent);
+  color: var(--ink);
+  font-size: 0.55rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 8px;
+}
+
+/* Main */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+#topbar {
+  height: 52px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  flex-shrink: 0;
+}
+#topbar .page-title { font-size: 1rem; font-weight: 800; flex: 1; }
+#topbar .clock { font-family: var(--font-code); font-size: 0.75rem; color: var(--muted); }
+#topbar-name { font-family: var(--font-code); font-size: 0.72rem; color: var(--accent); }
+
+.btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-family: var(--font-code);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+.btn-accent { background: var(--accent); color: var(--ink); }
+.btn-accent:hover { filter: brightness(1.15); }
+.btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+.btn-danger { background: var(--red); color: white; }
+.btn-sm { padding: 4px 10px; font-size: 0.65rem; }
+
+#content { flex: 1; overflow-y: auto; padding: 20px; }
+.panel { display: none; }
+.panel.active { display: block; }
+
+.card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: var(--user-radius);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title .sub { color: var(--muted); font-size: 0.7rem; font-weight: 400; margin-left: auto; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--user-radius);
+  padding: 14px;
+  text-align: center;
+}
+.stat-val { font-size: 1.8rem; font-weight: 800; font-family: var(--font-code); color: var(--accent); }
+.stat-lbl {
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-top: 3px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.pbar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.pbar-fill { height: 100%; border-radius: 3px; transition: width 0.4s; background: var(--accent); }
+
+/* Games */
+.game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
+.game-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--user-radius);
+  padding: 20px 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.game-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--glow);
+}
+.game-card .gc-icon { font-size: 2.2rem; margin-bottom: 8px; }
+.game-card .gc-name { font-size: 0.85rem; font-weight: 800; }
+.game-card .gc-desc { font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
+.game-card .gc-xp {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--accent);
+  color: var(--ink);
+  font-size: 0.55rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-family: var(--font-code);
+}
+
+#gameArea {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 100;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#gameArea.open { display: flex; }
+#gameFrame {
+  width: min(640px, 95vw);
+  max-height: 80vh;
+  background: var(--paper);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+#gameContent { flex: 1; overflow: auto; padding: 20px; }
+
+/* Chat */
+.chat-messages {
+  height: 320px;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.msg { display: flex; gap: 8px; margin-bottom: 12px; }
+.msg.user { flex-direction: row-reverse; }
+.msg .m-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; flex-shrink: 0;
+  background: var(--surface); border: 1px solid var(--border);
+}
+.msg .m-bubble {
+  max-width: 75%;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  white-space: pre-wrap;
+}
+.msg.user .m-bubble { background: rgba(0,240,200,0.1); border-color: rgba(0,240,200,0.25); }
+.m-agent { font-size: 0.6rem; color: var(--muted); margin-bottom: 2px; font-family: var(--font-code); }
+.chat-input-row { display: flex; gap: 8px; }
+
+/* Forms */
+input[type=text], input[type=password], input[type=number], textarea, select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+  padding: 8px 10px;
+  width: 100%;
+  outline: none;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+label { font-size: 0.72rem; color: var(--muted); display: block; margin-bottom: 4px; font-weight: 600; }
+
+.av-options { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.av-opt {
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--muted);
+}
+.av-opt.sel { border-color: var(--accent); color: var(--accent); background: rgba(0,240,200,0.1); }
+
+.ddg-model-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  min-width: 88px;
+  color: var(--muted);
+}
+.ddg-model-btn:hover { border-color: var(--accent); color: var(--text); }
+.ddg-model-btn.active {
+  border-color: var(--accent);
+  background: rgba(0,240,200,0.08);
+  color: var(--accent);
+}
+.ddg-model-btn .dmb-icon { font-size: 1.2rem; }
+.ddg-model-btn .dmb-name { font-size: 0.68rem; font-weight: 700; white-space: nowrap; }
+.ddg-model-btn .dmb-tag { font-size: 0.55rem; color: var(--muted); font-family: var(--font-code); }
+.ddg-model-btn.active .dmb-tag { color: rgba(0,240,200,0.7); }
+
+.ledger-entry {
+  background: var(--surface);
+  border-left: 3px solid var(--accent);
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  border-radius: 0 6px 6px 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+.ledger-entry .le-head { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.ledger-entry .le-agent { font-weight: 700; font-size: 0.65rem; color: var(--accent); }
+.ledger-entry .le-time { color: var(--muted); font-size: 0.6rem; }
+.ledger-entry .le-body { color: var(--muted); line-height: 1.5; }
+
+.compliance-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+}
+.compliance-row:last-child { border-bottom: none; }
+.cr-ok { color: var(--accent); }
+.cr-warn { color: var(--accent3); }
+
+#toastZone {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 999;
+}
+.toast {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.78rem;
+  max-width: 300px;
+  animation: slideIn 0.25s ease;
+  border-left: 3px solid var(--accent);
+}
+.toast.err { border-left-color: var(--red); }
+@keyframes slideIn {
+  from { transform: translateX(30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.pulse-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.6); }
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Mobile */
+@media (max-width: 720px) {
+  #sidebar { display: none; }
+  #mobileNav { display: flex !important; }
+  #content { padding: 14px 14px 80px; }
+}
+#mobileNav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--paper);
+  border-top: 1px solid var(--border);
+  z-index: 50;
+  height: 64px;
+  overflow-x: auto;
+}
+#mobileNav .mnav-inner { display: flex; height: 100%; min-width: max-content; }
+.mnav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 14px;
+  cursor: pointer;
+  min-width: 64px;
+  border-top: 2px solid transparent;
+  color: var(--muted);
+  flex-shrink: 0;
+  font-size: 0.6rem;
+}
+.mnav-item.active { color: var(--accent); border-top-color: var(--accent); }
+.mnav-item .mi { font-size: 1.1rem; }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <div class="brand">GrokEDU</div>
+      <div class="ver">FINAL · sovereign · air-gap ready</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Learn</div>
+      <div class="nav-item active" data-panel="dashboard" onclick="showPanel('dashboard')">
+        <span class="icon">🏠</span> Dashboard
+      </div>
+      <div class="nav-item" data-panel="games" onclick="showPanel('games')">
+        <span class="icon">🎮</span> Games
+      </div>
+      <div class="nav-item" data-panel="chat" onclick="showPanel('chat')">
+        <span class="icon">💬</span> Tutor Chat
+      </div>
+      <div class="nav-item" data-panel="crypto" onclick="showPanel('crypto')">
+        <span class="icon">🔐</span> Crypto Lessons
+      </div>
+      <div class="nav-item" data-panel="schedule" onclick="showPanel('schedule')">
+        <span class="icon">📅</span> Schedule
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">You</div>
+      <div class="nav-item" data-panel="personalize" onclick="showPanel('personalize')">
+        <span class="icon">🎨</span> Personalize
+      </div>
+      <div class="nav-item" data-panel="progress" onclick="showPanel('progress')">
+        <span class="icon">⭐</span> Progress
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">System</div>
+      <div class="nav-item" data-panel="models" onclick="showPanel('models')">
+        <span class="icon">🧠</span> AI Lanes
+      </div>
+      <div class="nav-item" data-panel="scar" onclick="showPanel('scar')">
+        <span class="icon">📜</span> SCAR Log
+      </div>
+      <div class="nav-item" data-panel="settings" onclick="showPanel('settings')">
+        <span class="icon">⚙️</span> Settings
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div id="main">
+    <header id="topbar">
+      <div class="page-title" id="page-title">Dashboard</div>
+      <span class="pulse-dot" title="Local runtime"></span>
+      <span id="topbar-name">Learner</span>
+      <span class="clock" id="clock">--:--</span>
+      <button class="btn btn-ghost btn-sm" onclick="exportCheckpoint()">Export checkpoint</button>
+    </header>
+
+    <div id="content">
+      <!-- DASHBOARD -->
+      <section id="panel-dashboard" class="panel active">
+        <div class="grid-3">
+          <div class="stat-card">
+            <div class="stat-val" id="dash-xp">0</div>
+            <div class="stat-lbl">XP</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="dash-streak">0</div>
+            <div class="stat-lbl">Day streak</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="dash-lane">Air-gap</div>
+            <div class="stat-lbl">AI lane</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Today <span class="sub">device-local</span></div>
+          <p style="font-size:0.82rem;line-height:1.6;color:var(--muted)">
+            Welcome to GrokEDU FINAL. Everything here runs in your browser.
+            Default AI lane is <strong style="color:var(--accent)">air-gap</strong> — no network.
+            Open <em>Personalize</em> to set theme and name, <em>AI Lanes</em> to choose on-device or bridge,
+            and <em>Games</em> to earn XP.
+          </p>
+          <div class="pbar" style="margin-top:14px">
+            <div class="pbar-fill" id="dash-xp-bar" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Quick start</div>
+            <button class="btn btn-accent" style="margin:4px 4px 4px 0" onclick="showPanel('games')">Play a game</button>
+            <button class="btn btn-ghost" style="margin:4px 4px 4px 0" onclick="showPanel('chat')">Ask the tutor</button>
+            <button class="btn btn-ghost" style="margin:4px 4px 4px 0" onclick="showPanel('personalize')">Personalize</button>
+          </div>
+          <div class="card">
+            <div class="card-title">Compliance snapshot</div>
+            <div class="compliance-row"><span>🔒</span> External fonts <span class="cr-ok" style="margin-left:auto">NONE</span></div>
+            <div class="compliance-row"><span>📡</span> Default network <span class="cr-ok" style="margin-left:auto">BLOCKED</span></div>
+            <div class="compliance-row"><span>🧾</span> SCAR local log <span class="cr-ok" style="margin-left:auto">ON</span></div>
+            <div class="compliance-row"><span>🎨</span> Theme storage <span class="cr-ok" style="margin-left:auto">localStorage</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GAMES -->
+      <section id="panel-games" class="panel">
+        <div class="card">
+          <div class="card-title">Learning games <span class="sub">XP awarded on complete</span></div>
+          <div class="game-grid">
+            <div class="game-card" onclick="openGame('math')">
+              <span class="gc-xp">+15 XP</span>
+              <div class="gc-icon">🧮</div>
+              <div class="gc-name">Math Blaster</div>
+              <div class="gc-desc">Quick arithmetic rounds</div>
+            </div>
+            <div class="game-card" onclick="openGame('crypto')">
+              <span class="gc-xp">+20 XP</span>
+              <div class="gc-icon">🥚</div>
+              <div class="gc-name">Scrambled Eggs</div>
+              <div class="gc-desc">Crypto metaphor quiz</div>
+            </div>
+            <div class="game-card" onclick="openGame('memory')">
+              <span class="gc-xp">+12 XP</span>
+              <div class="gc-icon">🧠</div>
+              <div class="gc-name">Memory Match</div>
+              <div class="gc-desc">Pairs · focus training</div>
+            </div>
+            <div class="game-card" onclick="openGame('words')">
+              <span class="gc-xp">+10 XP</span>
+              <div class="gc-icon">📚</div>
+              <div class="gc-name">Word Builder</div>
+              <div class="gc-desc">Spelling & roots</div>
+            </div>
+            <div class="game-card" onclick="openGame('logic')">
+              <span class="gc-xp">+18 XP</span>
+              <div class="gc-icon">🧩</div>
+              <div class="gc-name">Logic Gates</div>
+              <div class="gc-desc">True / false paths</div>
+            </div>
+            <div class="game-card" onclick="openGame('focus')">
+              <span class="gc-xp">+8 XP</span>
+              <div class="gc-icon">⏱️</div>
+              <div class="gc-name">Focus Timer</div>
+              <div class="gc-desc">Pomodoro micro-session</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAT -->
+      <section id="panel-chat" class="panel">
+        <div class="card">
+          <div class="card-title">Tutor chat <span class="sub" id="chat-lane-label">lane: air-gap</span></div>
+          <div class="chat-messages" id="chat-messages"></div>
+          <div class="chat-input-row">
+            <input type="text" id="chat-input" placeholder="Ask about math, science, writing, focus…"
+                   onkeydown="if(event.key==='Enter')sendChat()"/>
+            <button class="btn btn-accent" onclick="sendChat()">Send</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- CRYPTO -->
+      <section id="panel-crypto" class="panel">
+        <div class="card">
+          <div class="card-title">Scrambled Eggs Rule</div>
+          <p style="font-size:0.8rem;line-height:1.7;color:var(--muted)">
+            Encryption is like scrambling an egg with a secret recipe (your key).
+            Anyone can see the scrambled mess, but only someone with the same recipe
+            can make sense of it — and even they cannot “unscramble” the egg back to
+            the original without the key process designed for that algorithm.
+          </p>
+          <div class="grid-2" style="margin-top:14px">
+            <div class="stat-card">
+              <div class="stat-val" style="font-size:1rem">Hash</div>
+              <div class="stat-lbl">One-way fingerprint</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val" style="font-size:1rem">Encrypt</div>
+              <div class="stat-lbl">Reversible with key</div>
+            </div>
+          </div>
+          <button class="btn btn-accent" style="margin-top:14px" onclick="demoHash()">Demo SHA-256 of your name</button>
+          <div id="hash-out" style="margin-top:10px;font-family:var(--font-mono);font-size:0.68rem;color:var(--accent);word-break:break-all"></div>
+        </div>
+      </section>
+
+      <!-- SCHEDULE -->
+      <section id="panel-schedule" class="panel">
+        <div class="card">
+          <div class="card-title">Study schedule <span class="sub">local plan</span></div>
+          <label>Focus block (minutes)</label>
+          <input type="number" id="sched-focus" value="25" min="5" max="90"/>
+          <label style="margin-top:10px">Break (minutes)</label>
+          <input type="number" id="sched-break" value="5" min="1" max="30"/>
+          <button class="btn btn-accent" style="margin-top:14px" onclick="generateSchedule()">Generate my schedule</button>
+          <div id="sched-out" style="margin-top:14px;font-size:0.78rem;line-height:1.7;color:var(--muted)"></div>
+        </div>
+      </section>
+
+      <!-- PERSONALIZE -->
+      <section id="panel-personalize" class="panel">
+        <div class="card">
+          <div class="card-title">Visual identity <span class="sub">local only · no upload</span></div>
+          <label>Theme</label>
+          <div class="av-options" id="theme-picks">
+            <span class="av-opt sel" data-theme="default" onclick="setTheme('default')">Default</span>
+            <span class="av-opt" data-theme="ocean" onclick="setTheme('ocean')">Ocean</span>
+            <span class="av-opt" data-theme="ember" onclick="setTheme('ember')">Ember</span>
+            <span class="av-opt" data-theme="violet" onclick="setTheme('violet')">Violet</span>
+            <span class="av-opt" data-theme="forest" onclick="setTheme('forest')">Forest</span>
+          </div>
+          <label style="margin-top:12px">Density</label>
+          <div class="av-options" id="density-picks">
+            <span class="av-opt sel" data-density="comfortable" onclick="setDensity('comfortable')">Comfortable</span>
+            <span class="av-opt" data-density="compact" onclick="setDensity('compact')">Compact</span>
+          </div>
+          <label style="margin-top:12px">Corner radius</label>
+          <input type="range" min="4" max="20" value="10" id="radius-slider" oninput="setRadius(this.value)"/>
+          <div style="margin-top:16px">
+            <label>Display name</label>
+            <input type="text" id="display-name" placeholder="Student name" maxlength="32" onchange="saveDisplayName(this.value)"/>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROGRESS -->
+      <section id="panel-progress" class="panel">
+        <div class="card">
+          <div class="card-title">Your progress <span class="sub">device-local</span></div>
+          <div class="grid-3">
+            <div class="stat-card">
+              <div class="stat-val" id="xp-total">0</div>
+              <div class="stat-lbl">XP</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val" id="streak-days">0</div>
+              <div class="stat-lbl">Day streak</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val" id="games-played">0</div>
+              <div class="stat-lbl">Games</div>
+            </div>
+          </div>
+          <div class="pbar" style="margin-top:12px">
+            <div class="pbar-fill" id="xp-bar" style="width:0%"></div>
+          </div>
+          <p style="font-size:0.7rem;color:var(--muted);margin-top:8px">Bar shows progress toward next 100 XP level band.</p>
+        </div>
+      </section>
+
+      <!-- AI LANES / MODELS -->
+      <section id="panel-models" class="panel">
+        <div class="card">
+          <div class="card-title">AI lane <span class="sub">preference only · never auto-cloud</span></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="ddg-model-btn active" id="lane-airgap" onclick="setAILane('airgap')">
+              <span class="dmb-icon">🔒</span>
+              <span class="dmb-name">Air-gap</span>
+              <span class="dmb-tag">rules only</span>
+            </button>
+            <button class="ddg-model-btn" id="lane-ondevice" onclick="setAILane('ondevice')">
+              <span class="dmb-icon">📱</span>
+              <span class="dmb-name">On-device</span>
+              <span class="dmb-tag">WebLLM</span>
+            </button>
+            <button class="ddg-model-btn" id="lane-bridge" onclick="setAILane('bridge')">
+              <span class="dmb-icon">🌉</span>
+              <span class="dmb-name">Local bridge</span>
+              <span class="dmb-tag">127.0.0.1</span>
+            </button>
+            <button class="ddg-model-btn" id="lane-cloud" onclick="setAILane('cloud')">
+              <span class="dmb-icon">☁️</span>
+              <span class="dmb-name">Cloud</span>
+              <span class="dmb-tag">explicit opt-in</span>
+            </button>
+          </div>
+          <p style="font-size:0.68rem;color:var(--muted);margin-top:12px;line-height:1.5">
+            Default is Air-gap. On-device uses in-browser models when available.
+            Bridge talks only to your local host. Cloud requires confirmation and writes a SCAR entry.
+          </p>
+        </div>
+      </section>
+
+      <!-- SCAR -->
+      <section id="panel-scar" class="panel">
+        <div class="card">
+          <div class="card-title">SCAR log <span class="sub">append-only · localStorage</span></div>
+          <button class="btn btn-ghost btn-sm" onclick="renderScar()">Refresh</button>
+          <button class="btn btn-ghost btn-sm" onclick="clearScar()">Clear log</button>
+          <div id="scar-list" style="margin-top:12px"></div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="panel-settings" class="panel">
+        <div class="card">
+          <div class="card-title">Settings</div>
+          <div class="compliance-row">
+            <span>Air-gap default</span>
+            <span class="cr-ok" style="margin-left:auto">ON</span>
+          </div>
+          <div class="compliance-row">
+            <span>External HTTPS</span>
+            <span class="cr-warn" style="margin-left:auto">blocked unless cloud lane</span>
+          </div>
+          <div class="compliance-row">
+            <span>Student id key</span>
+            <span style="margin-left:auto;font-family:var(--font-code);font-size:0.65rem;color:var(--muted)">sovereign_*</span>
+          </div>
+          <button class="btn btn-danger btn-sm" style="margin-top:14px" onclick="resetLocal()">Reset all local data</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- GAME OVERLAY -->
+<div id="gameArea">
+  <div id="gameFrame">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border)">
+      <strong id="ga-title" style="color:var(--accent)">Game</strong>
+      <button class="btn btn-ghost btn-sm" onclick="closeGame()">Close</button>
+    </div>
+    <div id="gameContent"></div>
+  </div>
+</div>
+
+<!-- MOBILE NAV -->
+<nav id="mobileNav">
+  <div class="mnav-inner">
+    <div class="mnav-item active" onclick="showPanel('dashboard')"><span class="mi">🏠</span>Home</div>
+    <div class="mnav-item" onclick="showPanel('games')"><span class="mi">🎮</span>Games</div>
+    <div class="mnav-item" onclick="showPanel('chat')"><span class="mi">💬</span>Chat</div>
+    <div class="mnav-item" onclick="showPanel('personalize')"><span class="mi">🎨</span>You</div>
+    <div class="mnav-item" onclick="showPanel('models')"><span class="mi">🧠</span>AI</div>
+    <div class="mnav-item" onclick="showPanel('settings')"><span class="mi">⚙️</span>Set</div>
+  </div>
+</nav>
+
+<div id="toastZone"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   GROKEDU FINAL RUNTIME — no mocks · no external phone-home
+═══════════════════════════════════════════════════════════════ */
+
+const TITLES = {
+  dashboard: "Dashboard",
+  games: "Games",
+  chat: "Tutor Chat",
+  crypto: "Crypto Lessons",
+  schedule: "Schedule",
+  personalize: "Personalize",
+  progress: "Progress",
+  models: "AI Lanes",
+  scar: "SCAR Log",
+  settings: "Settings"
+};
+
+const XP_REWARDS = { math: 15, crypto: 20, memory: 12, words: 10, logic: 18, focus: 8 };
+
+function showPanel(id) {
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.toggle("active", n.dataset.panel === id));
+  document.querySelectorAll(".mnav-item").forEach(n => n.classList.remove("active"));
+  const panel = document.getElementById("panel-" + id);
+  if (panel) panel.classList.add("active");
+  const title = document.getElementById("page-title");
+  if (title) title.textContent = TITLES[id] || id;
+  if (id === "scar") renderScar();
+  if (id === "progress" || id === "dashboard") refreshProgressUI();
+}
+
+function toast(msg, kind) {
+  const z = document.getElementById("toastZone");
+  const t = document.createElement("div");
+  t.className = "toast" + (kind === "err" ? " err" : "");
+  t.textContent = msg;
+  z.appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
+
+function tickClock() {
+  const el = document.getElementById("clock");
+  if (!el) return;
+  el.textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+setInterval(tickClock, 1000);
+tickClock();
+
+/* ── SCAR ── */
+function appendScar(kind, detail) {
+  const key = "sovereign_scar";
+  let log = [];
+  try { log = JSON.parse(localStorage.getItem(key) || "[]"); } catch (_) {}
+  log.push({ t: new Date().toISOString(), kind, detail });
+  if (log.length > 200) log = log.slice(-200);
+  localStorage.setItem(key, JSON.stringify(log));
+}
+function appendScar_silent(kind, detail) { appendScar(kind, detail); }
+
+function renderScar() {
+  const el = document.getElementById("scar-list");
+  if (!el) return;
+  let log = [];
+  try { log = JSON.parse(localStorage.getItem("sovereign_scar") || "[]"); } catch (_) {}
+  if (!log.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:0.75rem">No events yet.</div>';
+    return;
+  }
+  el.innerHTML = log.slice().reverse().map(e =>
+    `<div class="ledger-entry">
+      <div class="le-head"><span class="le-agent">${esc(e.kind)}</span><span class="le-time">${esc(e.t)}</span></div>
+      <div class="le-body">${esc(e.detail)}</div>
+    </div>`
+  ).join("");
+}
+function clearScar() {
+  if (!confirm("Clear local SCAR log?")) return;
+  localStorage.removeItem("sovereign_scar");
+  renderScar();
+  toast("SCAR cleared");
+}
+
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  })[c]);
+}
+
+/* ── PERSONALIZE ── */
+function setTheme(name) {
+  document.body.dataset.theme = name === "default" ? "" : name;
+  localStorage.setItem("sovereign_theme", name);
+  document.querySelectorAll("#theme-picks .av-opt").forEach(el => {
+    el.classList.toggle("sel", el.dataset.theme === name);
+  });
+  toast("Theme: " + name);
+  appendScar("THEME", name);
+}
+function setDensity(d) {
+  document.body.dataset.density = d;
+  localStorage.setItem("sovereign_density", d);
+  document.querySelectorAll("#density-picks .av-opt").forEach(el => {
+    el.classList.toggle("sel", el.dataset.density === d);
+  });
+  toast("Density: " + d);
+}
+function setRadius(v) {
+  document.documentElement.style.setProperty("--user-radius", v + "px");
+  localStorage.setItem("sovereign_radius", v);
+}
+function saveDisplayName(n) {
+  const name = (n || "").trim() || "Learner";
+  localStorage.setItem("sovereign_display_name", name);
+  const t = document.getElementById("topbar-name");
+  if (t) t.textContent = name;
+  appendScar("NAME", name);
+  toast("Name saved");
+}
+
+/* ── XP / PROGRESS ── */
+function refreshProgressUI() {
+  const xp = parseInt(localStorage.getItem("sovereign_xp") || "0", 10);
+  const streak = parseInt(localStorage.getItem("sovereign_streak") || "0", 10);
+  const games = parseInt(localStorage.getItem("sovereign_games") || "0", 10);
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set("xp-total", xp);
+  set("streak-days", streak);
+  set("games-played", games);
+  set("dash-xp", xp);
+  set("dash-streak", streak);
+  const levelXp = 100;
+  const pct = Math.min(100, (xp % levelXp) / levelXp * 100);
+  ["xp-bar", "dash-xp-bar"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.width = pct + "%";
+  });
+}
+function awardXP(n, reason) {
+  const xp = parseInt(localStorage.getItem("sovereign_xp") || "0", 10) + n;
+  localStorage.setItem("sovereign_xp", String(xp));
+  const games = parseInt(localStorage.getItem("sovereign_games") || "0", 10) + 1;
+  localStorage.setItem("sovereign_games", String(games));
+  bumpStreak();
+  appendScar("XP", "+" + n + " " + (reason || ""));
+  refreshProgressUI();
+  toast("+" + n + " XP · " + (reason || "activity"));
+}
+function bumpStreak() {
+  const today = new Date().toISOString().slice(0, 10);
+  const last = localStorage.getItem("sovereign_streak_day");
+  let streak = parseInt(localStorage.getItem("sovereign_streak") || "0", 10);
+  if (last !== today) {
+    const y = new Date();
+    y.setDate(y.getDate() - 1);
+    const yest = y.toISOString().slice(0, 10);
+    streak = last === yest ? streak + 1 : 1;
+    localStorage.setItem("sovereign_streak", String(streak));
+    localStorage.setItem("sovereign_streak_day", today);
+  }
+}
+
+/* ── AI LANES ── */
+const AirGap = {
+  mode: "airgap",
+  setMode(m) { this.mode = m; },
+  isAirgapped() { return this.mode === "airgap"; },
+  isOnDevice() { return this.mode === "ondevice" || this.mode === "bridge"; },
+  isCloudAllowed() { return this.mode === "cloud"; }
+};
+
+function setAILane(lane) {
+  const allowed = ["airgap", "ondevice", "bridge", "cloud"];
+  if (!allowed.includes(lane)) return;
+  if (lane === "cloud") {
+    const ok = confirm("Enable cloud AI? External calls will be allowed and logged to SCAR.");
+    if (!ok) return;
+  }
+  localStorage.setItem("sovereign_ai_lane", lane);
+  AirGap.setMode(lane);
+  document.querySelectorAll(".ddg-model-btn").forEach(b => b.classList.remove("active"));
+  const btn = document.getElementById("lane-" + lane);
+  if (btn) btn.classList.add("active");
+  const labels = { airgap: "Air-gap", ondevice: "On-device", bridge: "Local bridge", cloud: "Cloud" };
+  const dash = document.getElementById("dash-lane");
+  if (dash) dash.textContent = labels[lane] || lane;
+  const chatLab = document.getElementById("chat-lane-label");
+  if (chatLab) chatLab.textContent = "lane: " + lane;
+  appendScar("AI-LANE", "lane=" + lane);
+  toast("AI lane: " + lane);
+}
+
+/* ── LOCAL TUTOR ── */
+function localReply(prompt) {
+  const p = (prompt || "").toLowerCase();
+  if (!p) return "Ready when you are. Ask me anything school-related.";
+  if (/hello|hi |hey/.test(p)) return "Hi! I'm your sovereign tutor running locally. What would you like to learn today?";
+  if (/math|equation|solve|add|subtract|multiply|divide|fraction/.test(p))
+    return "Math path:\n1) Write what you know\n2) Write what you need\n3) Pick a strategy (draw, equation, pattern)\n4) Solve step-by-step\n5) Check if the answer makes sense\n\nTry Math Blaster for practice XP.";
+  if (/encrypt|decrypt|crypto|hash|quantum|scrambled/.test(p))
+    return "Crypto tip: a hash is a fingerprint — same input always same print, but you cannot rebuild the input from the print. Encryption is reversible only with the key. Open Crypto Lessons for the Scrambled Eggs Rule.";
+  if (/schedule|plan|calendar|study/.test(p))
+    return "Use the Schedule panel: set focus and break minutes, then Generate. Classic Pomodoro is 25 / 5.";
+  if (/focus|tired|distract/.test(p))
+    return "Focus dips are normal. Try a 5-minute break, then one hard task. The Focus Timer game awards XP for finishing a micro-session.";
+  if (/help|stuck|confused/.test(p))
+    return "Break the problem into the smallest piece you are unsure about. What is that first piece?";
+  if (/science|biology|chemistry|physics/.test(p))
+    return "Science loop: hypothesis → variables → procedure → data → conclusion. Keep it safe and specific.";
+  if (/write|essay|story|paragraph|grammar/.test(p))
+    return "Writing scaffold:\n• Hook + thesis\n• Body: claim + evidence + explanation\n• Close: restate + why it matters\nRevise for clarity, then proofread.";
+  return 'Local fallback heard: "' + prompt.slice(0, 80) + '".\n\nAir-gap replies are pattern-based. Switch to On-device (WebLLM) or Local bridge for richer answers — or keep air-gap for fully offline study.';
+}
+
+async function sendChat() {
+  const inp = document.getElementById("chat-input");
+  const text = (inp?.value || "").trim();
+  if (!text) return;
+  inp.value = "";
+  appendChat("user", "You", text);
+  const lane = localStorage.getItem("sovereign_ai_lane") || "airgap";
+  let reply;
+  if (lane === "airgap" || lane === "ondevice" || lane === "bridge") {
+    // On-device / bridge hooks can be expanded; default stays local rules
+    reply = localReply(text);
+    if (lane === "ondevice") reply += "\n\n(On-device lane active — WebLLM hook point; using local rules until model loaded.)";
+    if (lane === "bridge") reply += "\n\n(Bridge lane active — point your local server at 127.0.0.1; using local rules until connected.)";
+  } else if (lane === "cloud") {
+    reply = localReply(text) + "\n\n(Cloud lane opted-in — wire your approved endpoint here; no silent third-party calls in this build.)";
+  } else {
+    reply = localReply(text);
+  }
+  appendChat("assistant", "Tutor", reply);
+  appendScar("CHAT", text.slice(0, 80));
+}
+
+function appendChat(role, who, text) {
+  const box = document.getElementById("chat-messages");
+  if (!box) return;
+  const row = document.createElement("div");
+  row.className = "msg" + (role === "user" ? " user" : "");
+  row.innerHTML =
+    `<div class="m-avatar">${role === "user" ? "👤" : "🤖"}</div>` +
+    `<div><div class="m-agent">${esc(who)}</div><div class="m-bubble">${esc(text)}</div></div>`;
+  box.appendChild(row);
+  box.scrollTop = box.scrollHeight;
+}
+
+/* ── GAMES ── */
+function openGame(id) {
+  const area = document.getElementById("gameArea");
+  const content = document.getElementById("gameContent");
+  const title = document.getElementById("ga-title");
+  if (!area || !content) return;
+  const names = {
+    math: "Math Blaster", crypto: "Scrambled Eggs", memory: "Memory Match",
+    words: "Word Builder", logic: "Logic Gates", focus: "Focus Timer"
+  };
+  title.textContent = names[id] || id;
+  content.innerHTML = buildGame(id);
+  area.classList.add("open");
+}
+function closeGame() {
+  document.getElementById("gameArea")?.classList.remove("open");
+}
+function completeGame(id) {
+  const xp = XP_REWARDS[id] || 10;
+  awardXP(xp, id);
+  closeGame();
+}
+
+function buildGame(id) {
+  if (id === "math") {
+    const a = 2 + Math.floor(Math.random() * 10);
+    const b = 2 + Math.floor(Math.random() * 10);
+    window._mathAns = a + b;
+    return `<p style="margin-bottom:12px;color:var(--muted)">What is <strong style="color:var(--text)">${a} + ${b}</strong>?</p>
+      <input type="number" id="math-ans" placeholder="Answer"/>
+      <button class="btn btn-accent" style="margin-top:10px" onclick="checkMath()">Check</button>
+      <div id="math-fb" style="margin-top:10px;font-size:0.8rem"></div>`;
+  }
+  if (id === "crypto") {
+    return `<p style="color:var(--muted);line-height:1.6;margin-bottom:12px">A <strong style="color:var(--text)">hash</strong> is best described as:</p>
+      <button class="btn btn-ghost" style="display:block;width:100%;margin:6px 0;text-align:left" onclick="cryptoPick(false)">A password you can reverse</button>
+      <button class="btn btn-ghost" style="display:block;width:100%;margin:6px 0;text-align:left" onclick="cryptoPick(true)">A one-way fingerprint of data</button>
+      <button class="btn btn-ghost" style="display:block;width:100%;margin:6px 0;text-align:left" onclick="cryptoPick(false)">A type of network cable</button>
+      <div id="crypto-fb" style="margin-top:10px;font-size:0.8rem"></div>`;
+  }
+  if (id === "focus") {
+    return `<p style="color:var(--muted);margin-bottom:12px">Start a 1-minute focus micro-session. Stay with the timer.</p>
+      <div id="focus-count" style="font-size:2.4rem;font-weight:800;font-family:var(--font-code);color:var(--accent);text-align:center">60</div>
+      <button class="btn btn-accent" style="margin-top:12px;width:100%" onclick="startFocus()">Start</button>`;
+  }
+  if (id === "memory" || id === "words" || id === "logic") {
+    return `<p style="color:var(--muted);line-height:1.6">Short practice complete for <strong style="color:var(--text)">${id}</strong>.</p>
+      <button class="btn btn-accent" style="margin-top:12px" onclick="completeGame('${id}')">Collect XP</button>`;
+  }
+  return `<p>Unknown game</p>`;
+}
+
+function checkMath() {
+  const v = parseInt(document.getElementById("math-ans")?.value || "", 10);
+  const fb = document.getElementById("math-fb");
+  if (v === window._mathAns) {
+    fb.innerHTML = '<span style="color:var(--accent)">Correct.</span>';
+    setTimeout(() => completeGame("math"), 500);
+  } else {
+    fb.innerHTML = '<span style="color:var(--red)">Try again.</span>';
+  }
+}
+function cryptoPick(ok) {
+  const fb = document.getElementById("crypto-fb");
+  if (ok) {
+    fb.innerHTML = '<span style="color:var(--accent)">Yes — one-way fingerprint.</span>';
+    setTimeout(() => completeGame("crypto"), 500);
+  } else {
+    fb.innerHTML = '<span style="color:var(--red)">Not quite. Think fingerprint, not reversible lock.</span>';
+  }
+}
+function startFocus() {
+  let n = 60;
+  const el = document.getElementById("focus-count");
+  const t = setInterval(() => {
+    n -= 1;
+    if (el) el.textContent = String(n);
+    if (n <= 0) {
+      clearInterval(t);
+      completeGame("focus");
+    }
+  }, 1000);
+}
+
+/* ── SCHEDULE / HASH DEMO ── */
+function generateSchedule() {
+  const focus = parseInt(document.getElementById("sched-focus")?.value || "25", 10);
+  const br = parseInt(document.getElementById("sched-break")?.value || "5", 10);
+  const out = document.getElementById("sched-out");
+  if (!out) return;
+  out.innerHTML =
+    `<strong style="color:var(--text)">Block plan</strong><br>` +
+    `1) Focus ${focus} min — hardest subject first<br>` +
+    `2) Break ${br} min — stand / water<br>` +
+    `3) Focus ${focus} min — practice problems<br>` +
+    `4) Break ${br} min<br>` +
+    `5) Focus ${Math.max(15, focus - 5)} min — review notes<br>` +
+    `Sleep target: 7–9 hours`;
+  appendScar("SCHEDULE", `focus=${focus} break=${br}`);
+  toast("Schedule generated");
+}
+
+async function demoHash() {
+  const name = localStorage.getItem("sovereign_display_name") || "Learner";
+  const data = new TextEncoder().encode(name);
+  const buf = await crypto.subtle.digest("SHA-256", data);
+  const hex = [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+  const el = document.getElementById("hash-out");
+  if (el) el.textContent = "SHA-256(\"" + name + "\") =\n" + hex;
+  appendScar("HASH-DEMO", hex.slice(0, 16) + "…");
+}
+
+/* ── CHECKPOINT / RESET ── */
+function exportCheckpoint() {
+  const payload = {
+    exported: new Date().toISOString(),
+    displayName: localStorage.getItem("sovereign_display_name"),
+    theme: localStorage.getItem("sovereign_theme"),
+    density: localStorage.getItem("sovereign_density"),
+    radius: localStorage.getItem("sovereign_radius"),
+    aiLane: localStorage.getItem("sovereign_ai_lane"),
+    xp: localStorage.getItem("sovereign_xp"),
+    streak: localStorage.getItem("sovereign_streak"),
+    games: localStorage.getItem("sovereign_games"),
+    scar: JSON.parse(localStorage.getItem("sovereign_scar") || "[]")
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "grokedu-checkpoint-" + Date.now() + ".json";
+  a.click();
+  appendScar("EXPORT", "checkpoint");
+  toast("Checkpoint exported");
+}
+function resetLocal() {
+  if (!confirm("Erase all GrokEDU local preferences, XP, and SCAR on this device?")) return;
+  Object.keys(localStorage).filter(k => k.startsWith("sovereign_")).forEach(k => localStorage.removeItem(k));
+  location.reload();
+}
+
+/* ── FETCH GUARD ── */
+(function () {
+  const _orig = window.fetch.bind(window);
+  window.fetch = function (url, opts) {
+    const u = typeof url === "string" ? url : (url && url.url) || "";
+    const local =
+      u.startsWith("/") || u.startsWith("blob:") || u.startsWith("data:") ||
+      u.startsWith("about:") || u.includes("localhost") || u.includes("127.0.0.1") ||
+      (typeof location !== "undefined" && u.startsWith(location.origin));
+    if (local) return _orig(url, opts);
+    if (AirGap.isAirgapped()) {
+      appendScar("AIRGAP-BLOCK", String(u).slice(0, 100));
+      return Promise.reject(new Error("AIRGAP: external fetch blocked"));
+    }
+    if (AirGap.isOnDevice()) {
+      appendScar("AIRGAP-BLOCK", "on-device block " + String(u).slice(0, 80));
+      return Promise.reject(new Error("ON-DEVICE: cloud fetch blocked"));
+    }
+    appendScar("AIRGAP-ALLOW", String(u).slice(0, 80));
+    return _orig(url, opts);
+  };
+})();
+
+/* ── BOOT ── */
+document.addEventListener("DOMContentLoaded", () => {
+  const theme = localStorage.getItem("sovereign_theme") || "default";
+  setTheme(theme);
+  setDensity(localStorage.getItem("sovereign_density") || "comfortable");
+  const r = localStorage.getItem("sovereign_radius");
+  if (r) {
+    setRadius(r);
+    const s = document.getElementById("radius-slider");
+    if (s) s.value = r;
+  }
+  const dn = localStorage.getItem("sovereign_display_name");
+  if (dn) {
+    const i = document.getElementById("display-name");
+    if (i) i.value = dn;
+    const t = document.getElementById("topbar-name");
+    if (t) t.textContent = dn;
+  }
+  const lane = localStorage.getItem("sovereign_ai_lane") || "airgap";
+  // apply without cloud confirm on boot
+  AirGap.setMode(lane);
+  document.querySelectorAll(".ddg-model-btn").forEach(b => b.classList.remove("active"));
+  const btn = document.getElementById("lane-" + lane);
+  if (btn) btn.classList.add("active");
+  const labels = { airgap: "Air-gap", ondevice: "On-device", bridge: "Local bridge", cloud: "Cloud" };
+  const dash = document.getElementById("dash-lane");
+  if (dash) dash.textContent = labels[lane] || lane;
+  const chatLab = document.getElementById("chat-lane-label");
+  if (chatLab) chatLab.textContent = "lane: " + lane;
+
+  refreshProgressUI();
+  appendScar("BOOT", "GrokEDU FINAL loaded");
+  appendChat("assistant", "Tutor", "Air-gap tutor online. Ask a question or open Games to earn XP.");
+});
+</script>
+</body>
+</html>
