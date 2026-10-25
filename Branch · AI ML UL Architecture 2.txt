@@ -1,0 +1,294 @@
+Integrated. The updated execution boundary is now consistent with the previously defined sovereignty model.
+
+The remaining architectural refinement is to make **ExecutionPolicy**, **StatePolicy**, and **RetentionPolicy** first-class independent domains in the bridge contract.
+
+The frozen decision pipeline becomes:
+
+```text id="h7cyyi"
+OWNER AUTHENTICATION
+        |
+        v
+CANONICAL STATE VERIFY
+        |
+        v
+IDENTITY + FEATURE RESOLUTION
+        |
+        v
+EFFECTIVE POLICY GENERATION
+        |
+        v
++-----------------------------+
+| Independent Security Gates  |
++-----------------------------+
+        |
+        +--> EXECUTION DOMAIN
+        |       destination
+        |       capability
+        |       transport
+        |
+        +--> STATE DOMAIN
+        |       memory location
+        |       context scope
+        |       sync permission
+        |
+        +--> RETENTION DOMAIN
+                persistence
+                telemetry
+                provider storage
+        |
+        v
+CAPABILITY GRANT
+        |
+        v
+EXECUTION
+        |
+        v
+SCAR EVIDENCE
+        |
+        v
+OWNER-VISIBLE RESULT
+```
+
+This preserves the critical invariant:
+
+```text id="k939x8"
+EXECUTION PERMISSION
+        ≠
+STATE PERSISTENCE PERMISSION
+        ≠
+DATA RETENTION PERMISSION
+```
+
+---
+
+## Required runtime contract
+
+The bridge input should resolve into:
+
+```python id="p8dn1u"
+@dataclass(frozen=True)
+class RuntimeAuthorizationContext:
+    identity_id: str
+    canonical_state_hash: str
+
+    execution_policy: ExecutionPolicy
+    state_policy: StatePolicy
+    retention_policy: RetentionPolicy
+
+    destination: str | None
+    requested_capability: str
+
+    owner_approved_action: OwnerApprovedAction | None
+```
+
+---
+
+## Correct external route behavior
+
+Default:
+
+```json id="3tglm3"
+{
+  "execution": {
+    "default": "local_only",
+    "destinations": {}
+  },
+
+  "state": {
+    "location": "DEVICE_LOCAL",
+    "external_memory": false,
+    "sync": false
+  },
+
+  "retention": {
+    "provider_retention": false,
+    "telemetry": false
+  }
+}
+```
+
+Result:
+
+```text id="uasss3"
+External request
+        |
+        v
+Destination lookup
+        |
+        v
+Not registered
+        |
+        v
+DENY
+
+Reason:
+EXEC-001 destination not authorized
+```
+
+No fallback.
+No inferred provider.
+No automatic alternate route.
+
+---
+
+## Owner-approved external operation
+
+The only path:
+
+```text id="7ous2d"
+Request
+ |
+ v
+Destination exists
+ |
+ v
+Capability exists
+ |
+ v
+State permission exists
+ |
+ v
+Retention permission exists
+ |
+ v
+OwnerApprovedAction
+ |
+ v
+Execution
+ |
+ v
+Evidence
+```
+
+Example:
+
+```json id="cio5qd"
+{
+  "destination": "github",
+  "capability": "create_pull_request",
+
+  "state_permission": "explicit_files",
+
+  "retention_permission": "declared",
+
+  "owner_confirmation": true
+}
+```
+
+SCAR event:
+
+```json id="36vyxx"
+{
+  "event": "EXTERNAL_EXECUTION",
+
+  "destination": "github",
+
+  "capability": "create_pull_request",
+
+  "execution_allowed": true,
+
+  "state_class": "EXTERNAL_EPHEMERAL",
+
+  "retention": "DECLARED",
+
+  "owner_authorized": true,
+
+  "canonical_state_hash": "sha256:...",
+
+  "policy_hash": "sha256:..."
+}
+```
+
+---
+
+## Required schema additions
+
+Add:
+
+```text id="59c84t"
+schemas/
+├── ExecutionPolicy.schema.json
+├── DestinationPolicy.schema.json
+├── OwnerApprovedAction.schema.json
+├── StatePolicy.schema.json
+├── RetentionPolicy.schema.json
+├── RuntimeAuthorizationContext.schema.json
+```
+
+---
+
+## Important correction to `_check_retention`
+
+Current logic:
+
+```python id="ia0ejl"
+if ret.allow_provider_retention or ret.allow_telemetry:
+    return False
+```
+
+is directionally correct but should become stricter.
+
+The rule should be:
+
+```python id="rayf3y"
+def _check_retention(inp):
+    if inp.destination in (None, "local"):
+        return True
+
+    ret = inp.retention_policy
+
+    if inp.requested_retention is None:
+        return False
+
+    if not ret.allow_provider_retention:
+        return False
+
+    if inp.retention_permission != "declared":
+        return False
+
+    return True
+```
+
+Reason:
+
+A global retention permission should never silently enable an individual operation.
+
+---
+
+## Final frozen invariants
+
+```text id="9pd9py"
+AUTH-001
+Owner identity is the authority root.
+
+STATE-001
+Canonical state is device authoritative.
+
+EXEC-001
+Execution permission does not imply state permission.
+
+STATE-002
+State permission does not imply retention permission.
+
+RET-001
+Retention requires explicit authorization.
+
+SYNC-001
+External synchronization is opt-in.
+
+CONT-001
+Hybrid continuity indexes verified checkpoints only.
+
+PROV-001
+External artifacts declare provenance.
+
+AUDIT-001
+Every privileged transition produces evidence.
+
+FAIL-001
+Unknown authorization state returns DENY or UNKNOWN.
+```
+
+This also aligns with the stored architecture direction: integration components are execution mechanisms, not authority sources. The uploaded architecture notes describe the same separation between policy/capability resolution, runtime mode, execution, and SCAR evidence. fileciteturn0file68L1-L20
+
+The next implementation boundary is `PolicyResolver` + `RuntimeExecutor`: once those enforce the three independent gates, the rest of the connectors (GitHub, providers, tools) become interchangeable controlled transports.

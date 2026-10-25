@@ -1,0 +1,264 @@
+Patch review: this `SCAREvent` extension is aligned with the frozen v1.0 direction and the existing SCAR governance model. It adds two important audit dimensions:
+
+1. **event_class** → semantic classification of evidence.
+2. **route_trace** → deterministic routing provenance.
+
+This fits the existing architecture where SCAR records evidence across runtime, policy, routing, and authority boundaries. The uploaded architecture notes already define SCAR as the evidence plane and emphasize deterministic auditability. fileciteturn0file4
+
+I would make a few corrections before merging.
+
+---
+
+## 1. Dataclass field ordering issue
+
+Current patch:
+
+```python id="b5nv0c"
+classification_level: int = 0
+
+previous_event_hash: str
+signature: str
+event_hash: str
+```
+
+Python dataclasses do not allow non-default fields after default fields.
+
+This will fail:
+
+``` id="64v4y9"
+TypeError: non-default argument 'previous_event_hash' follows default argument
+```
+
+Move the default fields after required fields.
+
+Correct:
+
+```python id="anp2mt"
+@dataclass(frozen=True)
+class SCAREvent:
+    sequence: int
+    event_id: str
+    event_type: str
+    timestamp: str
+    identity_id: str
+    actor: SCARActor
+    capability_id: str | None
+    memory_hash: str | None
+
+    event_class: EventClass
+
+    previous_event_hash: str
+    signature: str
+    event_hash: str
+
+    route_trace: dict | None = None
+    classification_level: int = 0
+    metadata: Mapping[str, Any] = field(default_factory=dict)
+```
+
+---
+
+## 2. Freeze `route_trace`
+
+`metadata` is frozen, but `route_trace` remains mutable.
+
+That creates an audit integrity gap.
+
+Example:
+
+```python id="ep40by"
+event.route_trace["selected_provider"] = "modified"
+```
+
+The signature remains valid while the object changed.
+
+I would apply the same immutable treatment:
+
+```python id="yw1pzo"
+route_trace: Mapping[str, Any] | None = None
+```
+
+Then:
+
+```python id="aw3i7i"
+def __post_init__(self):
+    object.__setattr__(
+        self,
+        "metadata",
+        _freeze(self.metadata)
+    )
+
+    if self.route_trace is not None:
+        object.__setattr__(
+            self,
+            "route_trace",
+            _freeze(self.route_trace)
+        )
+
+    if not isinstance(self.event_class, EventClass):
+        object.__setattr__(
+            self,
+            "event_class",
+            EventClass(self.event_class)
+        )
+```
+
+---
+
+## 3. Add classification validation
+
+Current:
+
+```python id="nz3x3z"
+classification_level: int = 0
+```
+
+I would enforce the contract:
+
+```python id="hprf4h"
+if not 0 <= self.classification_level <= 4:
+    raise ValueError(
+        "classification_level must be between 0 and 4"
+    )
+```
+
+Otherwise invalid evidence can enter the ledger.
+
+---
+
+## 4. Include route trace in hash normalization
+
+The signing document is correct conceptually:
+
+```python id="6tb8tm"
+if route_trace is not None:
+    doc["route_trace"] = route_trace
+```
+
+Keep that behavior.
+
+Do not put `route_trace` only into metadata.
+
+The distinction matters:
+
+```text id="6tas6o"
+metadata
+    descriptive context
+
+route_trace
+    security-relevant decision provenance
+```
+
+A routing decision should be independently queryable.
+
+---
+
+## 5. Add event class registry mapping
+
+I would add a helper:
+
+```python id="xp1d1d"
+EVENT_CLASS_BY_TYPE = {
+    "ROUTE_DECISION": EventClass.ROUTING,
+    "AI_REQUEST": EventClass.AI_REQUEST,
+    "MODEL_REGISTERED": EventClass.MODEL_REGISTRY,
+    "POLICY_DECISION": EventClass.POLICY,
+    "CONSENT_GRANTED": EventClass.CONSENT,
+}
+```
+
+Then optionally:
+
+```python id="fyku32"
+event_class: EventClass | None = None
+```
+
+and normalize:
+
+```python id="0uzyl2"
+normalized_event_class = (
+    EventClass(event_class)
+    if event_class
+    else EVENT_CLASS_BY_TYPE.get(
+        event_type,
+        EventClass.SYSTEM
+    )
+)
+```
+
+This prevents inconsistent labeling.
+
+---
+
+## 6. Route trace schema should be versioned
+
+Because this becomes part of the signed evidence model, add:
+
+```python id="b9rwim"
+route_trace={
+    "trace_version": 1,
+    "trace_id": str(uuid4()),
+    "modality": "voice",
+    "routing_score": 0.91,
+    "selected_provider": "xai-sovereign",
+    "fallback_used": False
+}
+```
+
+Future routing engines can evolve without breaking verification.
+
+---
+
+## 7. Suggested final event contract
+
+The resulting SCAR event becomes:
+
+```text id="s868wx"
+SCAREvent
+
+Identity
+ ├── identity_id
+ ├── actor
+ └── capability_id
+
+Classification
+ ├── event_type
+ ├── event_class
+ └── classification_level
+
+Provenance
+ ├── sequence
+ ├── timestamp
+ ├── previous_event_hash
+ ├── event_hash
+ └── signature
+
+Decision Evidence
+ ├── route_trace
+ └── metadata
+```
+
+This matches the broader governance model:
+
+```text id="6qnycl"
+Authority Gate
+      |
+      v
+Policy Engine
+      |
+      v
+Router Decision
+      |
+      v
+SCAR Evidence
+      |
+      v
+Owner-verifiable history
+```
+
+The patch is a good v1.0 alignment change. The two required hardening changes before merge are:
+
+1. Fix dataclass field ordering.
+2. Make `route_trace` immutable before signing/storage.
+
+After those, this is suitable for the frozen contract.

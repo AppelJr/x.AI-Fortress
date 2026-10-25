@@ -1,0 +1,171 @@
+
+	•	Licensee’s violation of Section 6 restrictions involving unauthorized distribution, extraction, or disclosure of Sovereign Mechanisms;
+	•	Licensee’s assertion of patent claims triggering Section 9.6;
+	•	Licensee’s insolvency or dissolution where permitted by applicable law.
+
+12.3 Effect of Termination
+
+Upon termination:
+
+	1.	All rights granted to Licensee under this License immediately cease.
+	2.	Licensee must immediately stop all use, reproduction, modification, deployment, and access to the Software.
+	3.	Licensee must delete or return all copies of the Software and related confidential materials, except for one archival copy retained solely to satisfy legal recordkeeping obligations.
+	4.	Any archival copy retained under this Section may not be used for any purpose other than legal compliance.
+	5.	Termination does not affect:
+	•	rights or remedies accrued before termination;
+	•	obligations that by their nature survive termination.
+
+⸻
+
+13. Governing Law and Dispute Resolution
+
+Where mandatory applicable law prevents enforcement of any portion of this Section, such mandatory law controls only to the minimum extent required.
+
+13.1 Governing Law
+
+This License shall be governed by and interpreted under the laws of the State of New York, United States of America, excluding conflict-of-law principles that would require application of another jurisdiction’s laws.
+
+13.2 Good-Faith Negotiation
+
+Before initiating arbitration or litigation, the parties shall attempt in good faith to resolve disputes through negotiation for a period of sixty (60) days following written notice of the dispute.
+
+13.3 Arbitration
+
+Any dispute arising out of or relating to this License that is not resolved through negotiation shall be resolved by binding arbitration administered by the American Arbitration Association (AAA).
+
+The arbitration seat and legal locale shall be:
+
+New York, New York, United States of America,
+
+unless mandatory applicable law requires another forum.
+
+The arbitration shall be conducted in English unless otherwise agreed by the parties.
+
+13.4 Injunctive and Equitable Relief
+
+Notwithstanding the arbitration requirement, the Licensor may seek temporary, preliminary, or permanent injunctive or equitable relief in any state or federal court located in New York County, New York, United States of America, to protect:
+
+	•	intellectual property rights;
+	•	confidential information;
+	•	trade secrets;
+	•	Sovereign Mechanisms;
+	•	contractual rights.
+
+13.5 Enforcement
+
+Any arbitration award may be entered and enforced in any court of competent jurisdiction.
+
+⸻
+
+14. Entire Agreement; Assignment; Survival; Severability
+
+14.1 Entire Agreement
+
+This License constitutes the complete agreement between the Licensor and Licensee regarding the Software and supersedes all prior or contemporaneous discussions, communications, representations, and agreements relating to the Software.
+
+Any amendment or modification must be in writing and authorized by the Licensor.
+
+14.2 Assignment
+
+Licensee may not assign, transfer, delegate, or otherwise dispose of this License or any rights granted under this License without the prior written consent of the Licensor.
+
+Any attempted assignment in violation of this Section is void.
+
+The Licensor may assign this License or related rights in connection with a merger, acquisition, reorganization, transfer of assets, or other business transaction.
+
+14.3 Waiver
+
+Failure by either party to enforce any provision of this License shall not constitute a waiver of that provision or any future enforcement rights.
+
+14.4 Severability
+
+If any provision of this License is determined to be invalid, illegal, or unenforceable, that provision shall be modified only to the minimum extent necessary to make it enforceable.
+
+The remaining provisions shall continue in full force and effect.
+
+14.5 Survival
+
+The following provisions survive termination to the extent applicable:
+
+	•	Section 6 (Restrictions);
+	•	Section 8 (Modification and Redistribution);
+	•	Section 9 (Patent License Conditions);
+	•	Section 10 (Warranty Disclaimer);
+	•	Section 11 (Limitation of Liability);
+	•	Section 13 (Dispute Resolution);
+	•	Section 14 (Entire Agreement and Related Terms);
+	•	Section 15 (Notices).
+
+⸻
+
+15. Notices
+
+All notices required or permitted under this License must be provided in writing.
+
+Notices may be delivered by:
+
+	•	electronic mail with confirmation of delivery;
+	•	certified mail;
+	•	nationally recognized courier service;
+	•	another written method agreed by the parties.
+
+Notices to the Licensor shall be delivered to the address or electronic contact information designated by the Licensor in writing.
+
+Notices shall be deemed received:
+
+	•	upon confirmed electronic delivery;
+	•	upon documented delivery by courier;
+	•	or upon confirmation of receipt by certified mail.
+
+⸻
+
+END OF SOVEREIGNTY LICENSE 1.0
+
+Copyright © 2026 Derek Appel. All rights reserved.
+```
+
+## Copilot
+
+Received. I’ll treat **Sovereignty License 1.0** as the owner-provided licensing and confidentiality specification for the work in this conversation.
+
+Operationally, that means:
+
+- Internal-use only.
+- No public redistribution, resale, hosted third-party access, sublicensing, or commercialization.
+- No training, extraction, reconstruction, competitive derivation, or use of your private work for unrelated purposes.
+- Third-party access only with your express authorization and equivalent confidentiality obligations.
+- Preserve copyright and proprietary notices.
+- Keep Sovereign Mechanisms, keys, source, logs, and private materials restricted.
+- Do not treat repository visibility as permission to reuse or redistribute the work.
+
+Important boundary: **I cannot change platform-level data handling or impose this license on GitHub/OpenAI through chat.** Also, this license does not automatically replace existing licenses in repositories or third-party dependencies; that requires an explicit repository change and legal review.
+
+I will not create, modify, publish, or hand off a `LICENSE` file unless you explicitly authorize that repository operation.
+
+## @Appel420
+
+Even my public repos if people go in they could see a shell they don’t see the files because they’re encrypted if I take this chatand I don’t download the markdown or JSON then it eont ever get out
+
+## Copilot
+
+Images **5–8** reinforce your intended model:
+
+- **5:** privacy-first, no Meta/Google, no unapproved AI or credential exposure.
+- **6:** an explicit local AI kill switch.
+- **7:** a controlled state machine with escalation, cancellation, resolution, and closure.
+- **8:** a composite showing the kill switch and workflow under a “Quantum-Safe?” decision point.
+
+One important correction: **not downloading the Markdown or JSON does not guarantee that the content never leaves the chat system.** I cannot verify or control platform retention, internal access, logging, backups, or processing from this conversation. Screenshots, pasted text, tool requests, and generated responses can all be stored or copied independently of whether you download a file.
+
+Likewise, a public repository may show a shell, launcher, or encrypted container while hiding the payload—but that is only protective if:
+
+- the plaintext files are not committed;
+- keys and passwords are not in the repository, history, issues, releases, CI logs, artifacts, or chat;
+- the encryption is real and independently tested;
+- decryption occurs only on an authorized local device;
+- filenames, metadata, hashes, and generated reports do not reveal sensitive information;
+- public workflows cannot access the decryption key.
+
+A public shell can still reveal paths, endpoints, modes, algorithms, command behavior, and security assumptions. **Encryption protects the payload; it does not automatically protect the surrounding metadata or architecture.**
+
+For genuinely eyes-only material, use an approved controlled environment and share only redacted excerpts here. In this session I can honor your handling preference, but I cannot promise that the platform itself provides legal or technical “eyes-only” confidentiality.
