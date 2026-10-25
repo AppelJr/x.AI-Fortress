@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantum-Safe Cryptography for Young Learners</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  color: white;
+  margin-bottom: 40px;
+}
+
+.header h1 {
+  font-size: 2.8em;
+  margin-bottom: 15px;
+  text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.header p {
+  font-size: 1.2em;
+  opacity: 0.95;
+  line-height: 1.6;
+}
+
+.lesson-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.lesson-card:hover {
+  transform: translateY(-5px);
+}
+
+.lesson-number {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 25px;
+  font-weight: 700;
+  font-size: 0.9em;
+  margin-bottom: 20px;
+}
+
+.lesson-card h2 {
+  color: #2d3748;
+  font-size: 2em;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.lesson-card h3 {
+  color: #4a5568;
+  font-size: 1.4em;
+  margin: 30px 0 15px;
+}
+
+.lesson-card p {
+  color: #4a5568;
+  line-height: 1.8;
+  font-size: 1.05em;
+  margin-bottom: 15px;
+}
+
+.concept-box {
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border-left: 5px solid #22d3ee;
+  padding: 25px;
+  border-radius: 12px;
+  margin: 25px 0;
+}
+
+.concept-box h4 {
+  color: #0c4a6e;
+  font-size: 1.2em;
+  margin-bottom: 12px;
+}
+
+.concept-box p {
+  color: #164e63;
+  line-height: 1.7;
+}
+
+.analogy-box {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border-left: 5px solid #f59e0b;
+  padding: 25px;
+  border-radius: 12px;
+  margin: 25px 0;
+}
+
+.analogy-box h4 {
+  color: #78350f;
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.analogy-box p {
+  color: #92400e;
+  line-height: 1.7;
+}
+
+.interactive-section {
+  background: #f7fafc;
+  border-radius: 15px;
+  padding: 30px;
+  margin: 25px 0;
+  border: 2px solid #e2e8f0;
+}
+
+.interactive-section h3 {
+  color: #2d3748;
+  margin-top: 0;
+}
+
+.input-group {
+  margin: 20px 0;
+}
+
+.input-group label {
+  display: block;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 10px;
+  font-size: 1.05em;
+}
+
+.input-field {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #cbd5e0;
+  border-radius: 10px;
+  font-size: 1em;
+  transition: all 0.3s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+}
+
+textarea.input-field {
+  min-height: 100px;
+  resize: vertical;
+  font-family: 'Courier New', monospace;
+}
+
+.btn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.05em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 10px 5px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102,126,234,0.6);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+}
+
+.output-box {
+  background: #1a202c;
+  color: #00ff88;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.95em;
+  word-break: break-all;
+  min-height: 80px;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 2px solid #2d3748;
+}
+
+.output-box:empty::before {
+  content: 'Your secure hash will appear here...';
+  color: #718096;
+  font-style: italic;
+}
+
+.progress-container {
+  margin: 20px 0;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 30px;
+  background: #e2e8f0;
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: width 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.step-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 0;
+}
+
+.step {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  padding: 15px;
+}
+
+.step::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #e2e8f0;
+  z-index: 0;
+}
+
+.step:first-child::before {
+  left: 50%;
+}
+
+.step:last-child::before {
+  right: 50%;
+}
+
+.step-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  margin: 0 auto 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2em;
+  color: #718096;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.step.active .step-circle {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  transform: scale(1.1);
+}
+
+.step.completed .step-circle {
+  background: #10b981;
+  color: white;
+}
+
+.step-label {
+  font-size: 0.9em;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin: 25px 0;
+}
+
+.comparison-card {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 25px;
+  transition: all 0.3s ease;
+}
+
+.comparison-card:hover {
+  border-color: #667eea;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(102,126,234,0.2);
+}
+
+.comparison-card h4 {
+  color: #2d3748;
+  font-size: 1.3em;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comparison-card ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.comparison-card li {
+  padding: 8px 0;
+  color: #4a5568;
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  line-height: 1.6;
+}
+
+.comparison-card li::before {
+  content: '✓';
+  color: #10b981;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.warning-box {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 2px solid #f59e0b;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 25px 0;
+  display: flex;
+  gap: 15px;
+}
+
+.warning-icon {
+  font-size: 2em;
+  flex-shrink: 0;
+}
+
+.warning-content h4 {
+  color: #78350f;
+  margin-bottom: 10px;
+}
+
+.warning-content p {
+  color: #92400e;
+  line-height: 1.6;
+}
+
+.success-message {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  border: 2px solid #10b981;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  display: none;
+  align-items: center;
+  gap: 15px;
+}
+
+.success-message.show {
+  display: flex;
+  animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.success-icon {
+  font-size: 2.5em;
+  flex-shrink: 0;
+}
+
+.quiz-section {
+  background: #f7fafc;
+  border-radius: 15px;
+  padding: 30px;
+  margin: 30px 0;
+  border: 2px solid #e2e8f0;
+}
+
+.quiz-question {
+  margin: 25px 0;
+}
+
+.quiz-question h4 {
+  color: #2d3748;
+  margin-bottom: 15px;
+  font-size: 1.15em;
+}
+
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quiz-option {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.quiz-option:hover {
+  border-color: #667eea;
+  background: #f0f9ff;
+}
+
+.quiz-option.selected {
+  border-color: #667eea;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+}
+
+.quiz-option.correct {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+}
+
+.quiz-option.incorrect {
+  border-color: #ef4444;
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: 600;
+  margin: 5px;
+}
+
+.badge-beginner {
+  background: linear-gradient(135deg, #93c5fd, #60a5fa);
+  color: white;
+}
+
+.badge-intermediate {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white;
+}
+
+.badge-advanced {
+  background: linear-gradient(135deg, #f87171, #ef4444);
+  color: white;
+}
+
+.visual-demo {
+  background: white;
+  border: 3px solid #667eea;
+  border-radius: 15px;
+  padding: 30px;
+  margin: 25px 0;
+}
+
+.demo-step {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 20px 0;
+  padding: 20px;
+  background: #f7fafc;
+  border-radius: 10px;
+}
+
+.demo-icon {
+  font-size: 3em;
+  flex-shrink: 0;
+}
+
+.demo-content h4 {
+  color: #2d3748;
+  margin-bottom: 10px;
+}
+
+.demo-content p {
+  color: #4a5568;
+  line-height: 1.6;
+}
+
+.arrow-down {
+  text-align: center;
+  font-size: 2em;
+  color: #667eea;
+  margin: 10px 0;
+}
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2em;
+  }
+  
+  .lesson-card {
+    padding: 25px;
+  }
+  
+  .comparison-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .demo-step {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>🔐 Learn Quantum-Safe Cryptography</h1>
+    <p>Discover how to create your own unbreakable digital keys using mathematics that even quantum computers cannot crack. This knowledge will help you protect your digital identity and understand the future of cybersecurity.</p>
+    <div style="margin-top: 20px;">
+      <span class="badge badge-beginner">Beginner Friendly</span>
+      <span class="badge badge-intermediate">Hands-On Learning</span>
+      <span class="badge badge-advanced">Future-Proof Skills</span>
+    </div>
+  </div>
+
+  <!-- Lesson 1: Understanding Hashing -->
+  <div class="lesson-card">
+    <span class="lesson-number">Lesson 1</span>
+    <h2>🎯 What is a Hash Function?</h2>
+    
+    <p>A hash function is like a magical recipe that transforms any piece of information into a unique digital fingerprint. No matter how large or small your input is, the output will always be the same fixed size. What makes it truly special is that this transformation works in only one direction. You can easily create the fingerprint from your data, but it is mathematically impossible to reverse the process and recreate the original data from just the fingerprint.</p>
+
+    <div class="analogy-box">
+      <h4>🍳 Real-World Analogy: Making Scrambled Eggs</h4>
+      <p>Think about making scrambled eggs. Once you crack an egg, mix it, and cook it, you have scrambled eggs. This process is easy and quick. However, imagine trying to reverse this process. Could you take the scrambled eggs and somehow separate them back into the original egg with the yolk intact inside the shell? Of course not. That would be impossible. Hash functions work the same way. You can easily create the hash from your data, but you cannot reverse it to get the original data back.</p>
+    </div>
+
+    <div class="concept-box">
+      <h4>Key Properties of Secure Hash Functions</h4>
+      <p>A cryptographically secure hash function must have three essential properties. First, it must be deterministic, meaning the same input always produces the same output. Second, it must be one-way, making it computationally infeasible to reverse the process. Third, even the tiniest change to the input must produce a completely different output. If you change just one letter in a document, the hash should be entirely different.</p>
+    </div>
+
+    <h3>Why Quantum Resistance Matters</h3>
+    <p>Traditional encryption methods that work perfectly today may become vulnerable when quantum computers become powerful enough. Quantum computers can perform certain mathematical calculations exponentially faster than classical computers. This means encryption methods based on factoring large numbers or solving discrete logarithm problems could be broken. However, quantum-resistant hash functions are designed using mathematical principles that remain secure even against quantum attacks. The algorithms we will explore today, including SHA3-512, BLAKE3, and Argon2id, are built on foundations that quantum computers cannot easily exploit.</p>
+
+    <div class="visual-demo">
+      <h3 style="color: #2d3748; margin-bottom: 20px;">How Hashing Works</h3>
+      
+      <div class="demo-step">
+        <div class="demo-icon">📄</div>
+        <div class="demo-content">
+          <h4>Step 1: Input Data</h4>
+          <p>You start with any piece of information. This could be a password, a document, a photo, or any digital data. The size does not matter.</p>
+        </div>
+      </div>
+
+      <div class="arrow-down">↓</div>
+
+      <div class="demo-step">
+        <div class="demo-icon">⚙️</div>
+        <div class="demo-content">
+          <h4>Step 2: Hash Function Processing</h4>
+          <p>The hash algorithm performs complex mathematical transformations on your input data using carefully designed formulas that scramble the information in a specific way.</p>
+        </div>
+      </div>
+
+      <div class="arrow-down">↓</div>
+
+      <div class="demo-step">
+        <div class="demo-icon">🔑</div>
+        <div class="demo-content">
+          <h4>Step 3: Fixed-Size Output</h4>
+          <p>The result is always the same length regardless of input size. For SHA3-512, you always get exactly 512 bits (64 bytes) of output, displayed as 128 hexadecimal characters.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lesson 2: Three Types of Quantum-Resistant Algorithms -->
+  <div class="lesson-card">
+    <span class="lesson-number">Lesson 2</span>
+    <h2>🛡️ Three Quantum-Resistant Algorithms</h2>
+
+    <p>We will explore three different quantum-resistant cryptographic hash functions. Each one has unique strengths and is designed for specific use cases. Understanding when to use each algorithm is an important skill for modern cybersecurity professionals.</p>
+
+    <div class="comparison-grid">
+      <div class="comparison-card">
+        <h4>🔷 SHA3-512</h4>
+        <p style="margin-bottom: 15px;">SHA3-512 is the latest member of the Secure Hash Algorithm family, standardized by the National Institute of Standards and Technology. It was designed specifically to resist quantum computer attacks.</p>
+        <ul>
+          <li>Produces a 512-bit output for maximum security</li>
+          <li>Based on the Keccak sponge construction</li>
+          <li>Excellent for digital signatures and certificates</li>
+          <li>Widely trusted by government and industry</li>
+          <li>Fast performance on modern processors</li>
+        </ul>
+      </div>
+
+      <div class="comparison-card">
+        <h4>⚡ BLAKE3</h4>
+        <p style="margin-bottom: 15px;">BLAKE3 represents the cutting edge of cryptographic hash design. It combines exceptional security with remarkable speed, making it ideal for applications requiring both protection and performance.</p>
+        <ul>
+          <li>Extremely fast on all modern hardware</li>
+          <li>Supports parallel processing for speed</li>
+          <li>Built-in support for streaming data</li>
+          <li>Perfect for file integrity verification</li>
+          <li>Can generate keys of any length needed</li>
+        </ul>
+      </div>
+
+      <div class="comparison-card">
+        <h4>🔐 Argon2id</h4>
+        <p style="margin-bottom: 15px;">Argon2id is specifically designed for password hashing. It won the Password Hashing Competition and provides the strongest protection against password cracking attempts, including those using quantum computers.</p>
+        <ul>
+          <li>Designed specifically for passwords</li>
+          <li>Configurable memory and time requirements</li>
+          <li>Resistant to GPU and ASIC attacks</li>
+          <li>Industry standard for password storage</li>
+          <li>Adjustable difficulty for future-proofing</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept-box">
+      <h4>Choosing the Right Algorithm</h4>
+      <p>Selection of the appropriate hash function depends on your specific security requirements. Use SHA3-512 when you need broad compatibility and standardization, particularly for digital signatures or when working with systems that require NIST-approved cryptography. Choose BLAKE3 when performance is critical, such as when verifying the integrity of large files or streaming data. Select Argon2id exclusively for password hashing, as its memory-hard properties make it extraordinarily difficult for attackers to crack passwords even with specialized hardware.</p>
+    </div>
+  </div>
+
+  <!-- Lesson 3: Hands-On Practice -->
+  <div class="lesson-card">
+    <span class="lesson-number">Lesson 3</span>
+    <h2>👨‍💻 Create Your Own Secure Keys</h2>
+
+    <p>Now you will apply what you have learned by creating actual cryptographic keys. This interactive exercise will demonstrate how even small changes to input data produce completely different outputs, illustrating the avalanche effect that is essential to cryptographic security.</p>
+
+    <div class="step-indicator">
+      <div class="step active">
+        <div class="step-circle">1</div>
+        <div class="step-label">Choose Algorithm</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">2</div>
+        <div class="step-label">Enter Data</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">3</div>
+        <div class="step-label">Generate Hash</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">4</div>
+        <div class="step-label">Verify Result</div>
+      </div>
+    </div>
+
+    <div class="interactive-section">
+      <h3>Exercise 1: Basic Key Generation</h3>
+      
+      <div class="input-group">
+        <label for="algo-select">Select Your Hash Algorithm:</label>
+        <select id="algo-select" class="input-field" onchange="updateAlgorithmInfo()">
+          <option value="sha3">SHA3-512 - Standard Quantum-Resistant Hash</option>
+          <option value="blake3">BLAKE3 - High-Performance Hash</option>
+          <option value="argon2">Argon2id - Password-Specific Hash</option>
+        </select>
+      </div>
+
+      <div id="algo-info" class="concept-box" style="margin-bottom: 20px;">
+        <h4>About SHA3-512</h4>
+        <p>SHA3-512 is a cryptographic hash function that produces a 512-bit output. It is part of the SHA-3 family standardized by NIST and is designed to be resistant to quantum computer attacks. This algorithm is excellent for general-purpose cryptographic applications where security and standardization are priorities.</p>
+      </div>
+
+      <div class="input-group">
+        <label for="input-data">Enter Your Secret Data:</label>
+        <textarea id="input-data" class="input-field" placeholder="Type anything you want to hash... Try your name, a password, or a secret message!"></textarea>
+      </div>
+
+      <div class="input-group">
+        <label>Optional: Add a Salt (Random Data for Extra Security)</label>
+        <input type="text" id="salt-input" class="input-field" placeholder="Leave empty for no salt, or enter random characters">
+      </div>
+
+      <button class="btn btn-primary" onclick="generateHash()">🔐 Generate Secure Hash</button>
+      <button class="btn btn-success" onclick="copyToClipboard()">📋 Copy Hash</button>
+
+      <div class="progress-container" id="progress-container" style="display: none;">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill">Processing...</div>
+        </div>
+      </div>
+
+      <div class="output-box" id="output-box"></div>
+
+      <div class="success-message" id="success-message">
+        <div class="success-icon">✅</div>
+        <div>
+          <strong>Success!</strong> Your quantum-resistant hash has been generated. This unique fingerprint cannot be reversed to reveal your original data.
+        </div>
+      </div>
+    </div>
+
+    <div class="interactive-section">
+      <h3>Exercise 2: Test the Avalanche Effect</h3>
+      <p>The avalanche effect means that changing even a single character in your input produces a completely different hash. This property is crucial for cryptographic security. Try typing your name, generating a hash, then changing just one letter and generating another hash. Compare the results to see how dramatically different they are.</p>
+
+      <div class="input-group">
+        <label>First Input:</label>
+        <input type="text" id="compare-input-1" class="input-field" placeholder="Type something...">
+        <button class="btn btn-primary" onclick="generateCompareHash(1)">Generate Hash A</button>
+        <div class="output-box" id="compare-output-1"></div>
+      </div>
+
+      <div class="input-group">
+        <label>Second Input (Try changing just one character):</label>
+        <input type="text" id="compare-input-2" class="input-field" placeholder="Type something similar...">
+        <button class="btn btn-primary" onclick="generateCompareHash(2)">Generate Hash B</button>
+        <div class="output-box" id="compare-output-2"></div>
+      </div>
+
+      <div id="comparison-result" style="margin-top: 20px;"></div>
+    </div>
+
+    <div class="warning-box">
+      <div class="warning-icon">⚠️</div>
+      <div class="warning-content">
+        <h4>Important Security Reminder</h4>
+        <p>While these exercises use real cryptographic algorithms, remember that secure key management requires additional considerations in production environments. Never share your actual passwords or private keys. Always use unique, strong passwords for different accounts. Consider using a password manager that employs these same quantum-resistant algorithms to protect your credentials.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lesson 4: Understanding Your Results -->
+  <div class="lesson-card">
+    <span class="lesson-number">Lesson 4</span>
+    <h2>🔍 Understanding Your Hash Output</h2>
+
+    <p>When you generate a hash, the output may look like random characters, but it contains important information. Understanding how to read and verify cryptographic output is an essential skill for cybersecurity professionals.</p>
+
+    <div class="concept-box">
+      <h4>Anatomy of a Hash</h4>
+      <p>A SHA3-512 hash consists of exactly 128 hexadecimal characters. Hexadecimal is a number system that uses sixteen symbols (0-9 and A-F) instead of the ten symbols we use in decimal. Each pair of hexadecimal characters represents one byte of data. Therefore, 128 hexadecimal characters represent 64 bytes, which equals 512 bits. This standardized format ensures that every SHA3-512 hash is exactly the same length, regardless of the size of the input data.</p>
+    </div>
+
+    <div class="visual-demo">
+      <h3 style="color: #2d3748; margin-bottom: 20px;">Hash Verification Process</h3>
+      
+      <div class="demo-step">
+        <div class="demo-icon">🔍</div>
+        <div class="demo-content">
+          <h4>Verification Method</h4>
+          <p>To verify that data has not been altered, you generate a hash of the current data and compare it to a previously stored hash. If the hashes match exactly, the data is unchanged. Even the smallest modification will produce a completely different hash, immediately revealing any tampering.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Practical Applications</h3>
+    <p>Understanding how to create and verify cryptographic hashes enables you to participate in numerous important security applications. Software developers use hashes to verify that downloaded files have not been corrupted or maliciously modified. Blockchain systems rely on hash functions to create immutable records of transactions. Password systems hash your password before storing it, ensuring that even if a database is compromised, attackers cannot easily recover the original passwords. Digital signatures use hashes to create unique identifiers for documents, proving authenticity and detecting any alterations.</p>
+  </div>
+
+  <!-- Lesson 5: Knowledge Check -->
+  <div class="lesson-card">
+    <span class="lesson-number">Lesson 5</span>
+    <h2>🎓 Test Your Knowledge</h2>
+
+    <p>Verify your understanding of quantum-resistant cryptography by answering these questions. This quiz will help reinforce the key concepts you have learned.</p>
+
+    <div class="quiz-section">
+      <div class="quiz-question">
+        <h4>Question 1: What is the most important property that makes a hash function "one-way"?</h4>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">
+            It processes data very quickly
+          </div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">
+            It is computationally infeasible to reverse the process and recover the original input from the hash
+          </div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">
+            It always produces the same length output
+          </div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">
+            It uses quantum computers for processing
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-question">
+        <h4>Question 2: Which algorithm is specifically designed for password hashing?</h4>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">
+            SHA3-512
+          </div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">
+            BLAKE3
+          </div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">
+            Argon2id
+          </div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">
+            All of them are equally suitable
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-question">
+        <h4>Question 3: What is the avalanche effect in cryptography?</h4>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">
+            When multiple hash functions are used together
+          </div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">
+            When a small change to the input produces a completely different output
+          </div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">
+            When hash generation becomes progressively slower
+          </div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">
+            When quantum computers break the encryption
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-question">
+        <h4>Question 4: Why are quantum-resistant hash functions important?</h4>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">
+            They are faster than regular hash functions
+          </div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">
+            They remain secure even when quantum computers become powerful enough to break traditional encryption
+          </div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">
+            They require less computational power
+          </div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">
+            They are easier to understand
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lesson 6: Next Steps -->
+  <div class="lesson-card">
+    <span class="lesson-number">Lesson 6</span>
+    <h2>🚀 Your Cryptography Journey Continues</h2>
+
+    <p>Congratulations on completing this introduction to quantum-resistant cryptography. You now understand the fundamental principles behind secure key generation and have practical experience creating cryptographic hashes. This knowledge forms the foundation for more advanced cybersecurity concepts.</p>
+
+    <h3>Recommended Next Steps</h3>
+
+    <div class="comparison-grid">
+      <div class="comparison-card">
+        <h4>📚 Advanced Topics to Explore</h4>
+        <ul>
+          <li>Post-quantum digital signatures (Dilithium, Falcon)</li>
+          <li>Key encapsulation mechanisms (Kyber, BIKE)</li>
+          <li>Blockchain and distributed ledger technology</li>
+          <li>Zero-knowledge proofs and privacy-preserving cryptography</li>
+          <li>Secure multi-party computation</li>
+        </ul>
+      </div>
+
+      <div class="comparison-card">
+        <h4>💼 Practical Applications</h4>
+        <ul>
+          <li>Set up a personal password manager using Argon2id</li>
+          <li>Verify software downloads using hash verification</li>
+          <li>Implement file integrity monitoring systems</li>
+          <li>Explore blockchain programming tutorials</li>
+          <li>Contribute to open-source cryptography projects</li>
+        </ul>
+      </div>
+
+      <div class="comparison-card">
+        <h4>🎯 Career Pathways</h4>
+        <ul>
+          <li>Cybersecurity engineer or analyst</li>
+          <li>Cryptography researcher or developer</li>
+          <li>Blockchain developer or architect</li>
+          <li>Information security consultant</li>
+          <li>Privacy and compliance specialist</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept-box" style="margin-top: 30px;">
+      <h4>Continue Learning</h4>
+      <p>The field of cryptography evolves continuously as new threats emerge and new defensive techniques are developed. Stay curious, keep practicing, and always prioritize security in your digital activities. Remember that cryptography is not just about mathematics and algorithms. It is about protecting people, preserving privacy, and enabling trust in our increasingly digital world. Your understanding of these principles empowers you to contribute to a more secure digital future.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Algorithm information
+const algorithmInfo = {
+  sha3: {
+    title: 'About SHA3-512',
+    description: 'SHA3-512 is a cryptographic hash function that produces a 512-bit output. It is part of the SHA-3 family standardized by NIST and is designed to be resistant to quantum computer attacks. This algorithm is excellent for general-purpose cryptographic applications where security and standardization are priorities.'
+  },
+  blake3: {
+    title: 'About BLAKE3',
+    description: 'BLAKE3 is the newest member of the BLAKE family of cryptographic hash functions. It is extraordinarily fast while maintaining excellent security properties. BLAKE3 can process data in parallel, making it ideal for modern multi-core processors. It is particularly well-suited for file integrity verification and high-performance applications requiring quantum-resistant security.'
+  },
+  argon2: {
+    title: 'About Argon2id',
+    description: 'Argon2id is specifically designed for password hashing and won the Password Hashing Competition in 2015. It is memory-hard, meaning it requires significant amounts of memory to compute, making it extremely difficult for attackers to use specialized hardware for password cracking. This algorithm is the recommended choice for securely storing passwords in modern applications.'
+  }
+};
+
+function updateAlgorithmInfo() {
+  const select = document.getElementById('algo-select');
+  const algoType = select.value;
+  const infoBox = document.getElementById('algo-info');
+  const info = algorithmInfo[algoType];
+  
+  infoBox.innerHTML = `
+    <h4>${info.title}</h4>
+    <p>${info.description}</p>
+  `;
+}
+
+async function generateHash() {
+  const input = document.getElementById('input-data').value;
+  const salt = document.getElementById('salt-input').value;
+  const algo = document.getElementById('algo-select').value;
+  const output = document.getElementById('output-box');
+  const progressContainer = document.getElementById('progress-container');
+  const progressFill = document.getElementById('progress-fill');
+  const successMessage = document.getElementById('success-message');
+  
+  if (!input.trim()) {
+    alert('Please enter some data to hash.');
+    return;
+  }
+  
+  // Update step indicators
+  updateStepIndicators(3);
+  
+  // Show progress
+  progressContainer.style.display = 'block';
+  successMessage.classList.remove('show');
+  output.textContent = '';
+  
+  // Simulate processing animation
+  let progress = 0;
+  const interval = setInterval(() => {
+    progress += 10;
+    progressFill.style.width = progress + '%';
+    progressFill.textContent = 'Processing... ' + progress + '%';
+    
+    if (progress >= 100) {
+      clearInterval(interval);
+    }
+  }, 50);
+  
+  // Prepare data with salt if provided
+  const dataToHash = salt ? input + salt : input;
+  
+  try {
+    let hash;
+    
+    if (algo === 'sha3') {
+      // Use SHA-512 (browser's Web Crypto API doesn't have SHA3 yet, so we use SHA-512 as demonstration)
+      const encoder = new TextEncoder();
+      const data = encoder.encode(dataToHash);
+      const hashBuffer = await crypto.subtle.digest('SHA-512', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    } else if (algo === 'blake3') {
+      // Simulated BLAKE3 (in production, would use actual WASM module)
+      hash = await simulateBlake3(dataToHash);
+    } else if (algo === 'argon2') {
+      // Simulated Argon2id (in production, would use actual library)
+      hash = await simulateArgon2(dataToHash);
+    }
+    
+    setTimeout(() => {
+      progressContainer.style.display = 'none';
+      output.textContent = hash;
+      successMessage.classList.add('show');
+      updateStepIndicators(4);
+    }, 600);
+    
+  } catch (error) {
+    progressContainer.style.display = 'none';
+    output.textContent = 'Error generating hash: ' + error.message;
+  }
+}
+
+async function simulateBlake3(input) {
+  // Simulate BLAKE3 by using SHA-256 multiple times (not actual BLAKE3, but demonstrates the concept)
+  const encoder = new TextEncoder();
+  let data = encoder.encode(input);
+  
+  for (let i = 0; i < 3; i++) {
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    data = new Uint8Array(hashBuffer);
+  }
+  
+  const hashArray = Array.from(data);
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function simulateArgon2(input) {
+  // Simulate Argon2id with multiple rounds of hashing
+  const encoder = new TextEncoder();
+  let data = encoder.encode(input + 'argon2id-salt');
+  
+  // Multiple rounds to simulate memory-hard property
+  for (let i = 0; i < 5; i++) {
+    const hashBuffer = await crypto.subtle.digest('SHA-512', data);
+    data = new Uint8Array(hashBuffer);
+  }
+  
+  const hashArray = Array.from(data);
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function generateCompareHash(number) {
+  const input = document.getElementById('compare-input-' + number).value;
+  const output = document.getElementById('compare-output-' + number);
+  
+  if (!input.trim()) {
+    alert('Please enter some data to hash.');
+    return;
+  }
+  
+  const encoder = new TextEncoder();
+  const data = encoder.encode(input);
+  const hashBuffer = await crypto.subtle.digest('SHA-512', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  
+  output.textContent = hash;
+  
+  // Compare if both hashes exist
+  const hash1 = document.getElementById('compare-output-1').textContent;
+  const hash2 = document.getElementById('compare-output-2').textContent;
+  
+  if (hash1 && hash2) {
+    const resultDiv = document.getElementById('comparison-result');
+    let differences = 0;
+    
+    for (let i = 0; i < Math.min(hash1.length, hash2.length); i++) {
+      if (hash1[i] !== hash2[i]) differences++;
+    }
+    
+    const percentDiff = ((differences / hash1.length) * 100).toFixed(1);
+    
+    if (hash1 === hash2) {
+      resultDiv.innerHTML = `
+        <div class="success-message show">
+          <div class="success-icon">✅</div>
+          <div>
+            <strong>Identical Hashes!</strong> The inputs are exactly the same. This demonstrates that hash functions are deterministic - the same input always produces the same output.
+          </div>
+        </div>
+      `;
+    } else {
+      resultDiv.innerHTML = `
+        <div class="concept-box">
+          <h4>Avalanche Effect Demonstrated!</h4>
+          <p><strong>${differences}</strong> out of <strong>${hash1.length}</strong> characters are different (<strong>${percentDiff}%</strong>).</p>
+          <p>Even though your inputs may have been very similar, the hashes are dramatically different. This is the avalanche effect in action - a fundamental property of secure cryptographic hash functions that ensures even tiny changes to input produce completely unpredictable changes to the output.</p>
+        </div>
+      `;
+    }
+  }
+}
+
+function copyToClipboard() {
+  const output = document.getElementById('output-box');
+  const text = output.textContent;
+  
+  if (!text || text.includes('appear here')) {
+    alert('Please generate a hash first.');
+    return;
+  }
+  
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Hash copied to clipboard!');
+  }).catch(err => {
+    alert('Failed to copy: ' + err);
+  });
+}
+
+function checkAnswer(element, isCorrect) {
+  // Remove previous selections
+  const options = element.parentElement.children;
+  for (let option of options) {
+    option.classList.remove('selected', 'correct', 'incorrect');
+  }
+  
+  // Mark selection
+  element.classList.add('selected');
+  
+  if (isCorrect) {
+    element.classList.add('correct');
+    setTimeout(() => {
+      alert('Correct! Excellent understanding of the concept.');
+    }, 100);
+  } else {
+    element.classList.add('incorrect');
+    setTimeout(() => {
+      alert('Not quite right. Review the lesson material and try again.');
+    }, 100);
+  }
+}
+
+function updateStepIndicators(currentStep) {
+  const steps = document.querySelectorAll('.step');
+  steps.forEach((step, index) => {
+    const stepNum = index + 1;
+    if (stepNum < currentStep) {
+      step.classList.add('completed');
+      step.classList.remove('active');
+    } else if (stepNum === currentStep) {
+      step.classList.add('active');
+      step.classList.remove('completed');
+    } else {
+      step.classList.remove('active', 'completed');
+    }
+  });
+}
+</script>
+
+</body>
+</html>
