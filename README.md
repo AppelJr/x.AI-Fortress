@@ -1,3 +1,4 @@
+[![Python CI](https://github.com/AppelJr/x.AI-Fortress/actions/workflows/python-app.yml/badge.svg?branch=main)](https://github.com/AppelJr/x.AI-Fortress/actions/workflows/python-app.yml)
 # X.AI-Fortress
 Complete Security protocol
 # Drop-in for the team:
