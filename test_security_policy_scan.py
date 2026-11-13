@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.security_policy_scan import load_policy, scan, scan_file, validate_policy
+from security_policy_scan import load_policy, scan, scan_file, validate_policy
 
 
 def policy() -> dict:
